@@ -76,6 +76,24 @@ module Enumerable
         end
         mapped
       end
+
+      def my_inject
+        result = first
+        updated_result = []
+        each do |item|
+          updated_result << item
+        end
+        updated_result.delete_at(0)
+    
+        updated_result.each do |val|
+          result = yield(result, val)
+        end
+        result
+      end
+    
+      def multiply_els
+        my_inject { |result, num| result * num }
+      end
   end
   
 # Testing my_each method
@@ -114,3 +132,12 @@ module Enumerable
 
 # Testing my_map method
 # puts (1..4).my_map { |i| i*i }      #=> [1, 4, 9, 16]
+
+# Testing my_inject method
+# puts (4..10).my_inject { |sum, n| sum * n } #=> 45
+# puts (4..10).inject(1) { |sum, n| sum * n } #=> 45
+# puts [2,4,5].multiply_els                   #=> 40
+# longest = %w{ cat sheep bear }.my_inject do |memo, word|
+#   memo.length > word.length ? memo : word
+# end
+# puts longest
