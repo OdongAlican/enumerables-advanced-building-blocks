@@ -1,105 +1,103 @@
 module Enumerable
-    def my_each
-      index = 0
-      while index < size
-        if is_a? Array
-          yield self[index]
-        elsif is_a? Range
-          yield to_a[index]
-        end
-        index += 1
+  def my_each
+    index = 0
+    while index < size
+      if is_a? Array
+        yield self[index]
+      elsif is_a? Range
+        yield to_a[index]
       end
+      index += 1
     end
-  
-    def my_each_with_index
-      (0...size).each do |i|
-        yield(self[i], i)
-      end
-      self
-    end
-
-    def my_select
-        values = []
-        my_each do |val|
-          values.push(val) if yield(val)
-        end
-        values
-      end
-    
-      def my_all?
-        if block_given?
-          values = true
-          my_each { |val| values = false unless yield(val) }
-          values
-        elsif self.length < 1
-          true
-        else
-          false
-        end
-      end
-
-      def my_any?
-        if block_given?
-          values = false
-          my_each { |val| values = true if yield(val) }
-          values
-        else
-          true
-        end
-      end
-    
-      def my_none?
-        if block_given?
-          values = true
-          my_each { |val| values = false if yield(val) }
-          values
-        elsif self[0].nil? && !include?(true)
-          return true
-        else
-          return false
-        end
-        values
-      end
-
-      def my_count
-        count = 0
-        my_each do |num|
-          count += 1 if yield(num)
-        end
-        count
-      end
-    
-      def my_map
-        mapped = []
-        my_each do |i|
-          mapped << (proc.nil? ? proc.call(i) : yield(i))
-        end
-        mapped
-      end
-
-      def my_inject
-        result = first
-        updated_result = []
-        each do |item|
-          updated_result << item
-        end
-        updated_result.delete_at(0)
-    
-        updated_result.each do |val|
-          result = yield(result, val)
-        end
-        result
-      end
-    
-      def multiply_els
-        my_inject { |result, num| result * num }
-      end
   end
-  
+
+  def my_each_with_index
+    (0...size).each do |i|
+      yield(self[i], i)
+    end
+    self
+  end
+
+  def my_select
+    values = []
+    my_each do |val|
+      values.push(val) if yield(val)
+    end
+    values
+  end
+
+  def my_all?
+    if block_given?
+      values = true
+      my_each { |val| values = false unless yield(val) }
+      values
+    else
+      empty?
+    end
+  end
+
+  def my_any?
+    if block_given?
+      values = false
+      my_each { |val| values = true if yield(val) }
+      values
+    else
+      true
+    end
+  end
+
+  def my_none?
+    if block_given?
+      values = true
+      my_each { |val| values = false if yield(val) }
+      values
+    elsif self[0].nil? && !include?(true)
+      return true
+    else
+      return false
+    end
+    values
+  end
+
+  def my_count
+    count = 0
+    my_each do |num|
+      count += 1 if yield(num)
+    end
+    count
+  end
+
+  def my_map
+    mapped = []
+    my_each do |i|
+      mapped << (proc.nil? ? proc.call(i) : yield(i))
+    end
+    mapped
+  end
+
+  def my_inject
+    result = first
+    updated_result = []
+    each do |item|
+      updated_result << item
+    end
+    updated_result.delete_at(0)
+
+    updated_result.each do |val|
+      result = yield(result, val)
+    end
+    result
+  end
+
+  def multiply_els
+    my_inject { |result, num| result * num }
+  end
+end
+
 # Testing my_each method
 # puts (1..5).my_each  { |item| print item**2 }
 # puts (1..5).my_each  { |item| print item*2 }
-  
+
 # Testing my_each_with_index
 # [1,2,3,4,5].my_each_with_index   { |val, index| print [val, index] }
 
@@ -126,7 +124,7 @@ module Enumerable
 # puts [].my_none?                                           #=> true
 # puts [nil].my_none?                                        #=> true
 # puts [nil, false].my_none?                                 #=> true
-  
+
 # Testing my_count method
 # puts [1,2,3,4,5].my_count { |num| num > 0 }
 
