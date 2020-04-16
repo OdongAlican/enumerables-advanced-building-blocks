@@ -60,6 +60,22 @@ module Enumerable
         end
         values
       end
+
+      def my_count
+        count = 0
+        my_each do |num|
+          count += 1 if yield(num)
+        end
+        count
+      end
+    
+      def my_map
+        mapped = []
+        my_each do |i|
+          mapped << (proc.nil? ? proc.call(i) : yield(i))
+        end
+        mapped
+      end
   end
   
 # Testing my_each method
@@ -93,3 +109,8 @@ module Enumerable
 # puts [nil].my_none?                                        #=> true
 # puts [nil, false].my_none?                                 #=> true
   
+# Testing my_count method
+# puts [1,2,3,4,5].my_count { |num| num > 0 }
+
+# Testing my_map method
+# puts (1..4).my_map { |i| i*i }      #=> [1, 4, 9, 16]
