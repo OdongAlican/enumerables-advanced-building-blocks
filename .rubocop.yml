@@ -31,14 +31,12 @@ Style/DefWithParentheses:
   Enabled: false
 Style/FrozenStringLiteralComment:
   EnforcedStyle: never
-Style/ExponentialNotation:
-  Enabled: false
 Style/HashEachMethods:
-  Enabled: false
+ Enabled: false
 Style/HashTransformKeys:
-  Enabled: false
+ Enabled: false
 Style/HashTransformValues:
-  Enabled: false
+ Enabled: false
 
 Layout/HashAlignment:
   EnforcedColonStyle: key
@@ -47,10 +45,9 @@ Layout/ExtraSpacing:
 Layout/MultilineMethodCallIndentation:
   Enabled: true
   EnforcedStyle: indented
-Layout/SpaceAroundMethodCallOperator:
-  Enabled: true
+
 
 Lint/RaiseException:
-  Enabled: false
+ Enabled: false
 Lint/StructNewOverride:
-  Enabled: false
+ Enabled: false
