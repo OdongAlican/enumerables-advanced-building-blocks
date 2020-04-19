@@ -120,10 +120,19 @@ module Enumerable
     values
   end
 
-  def my_count
-    count = 0
-    my_each do |num|
-      count += 1 if yield(num)
+  def my_count(val = nil)
+    if block_given?
+      count = 0
+      my_each do |num|
+        count += 1 if yield(num)
+      end
+    elsif !block_given? && val != nil
+      count = 0
+      my_each do |num|
+        count += 1 if num == val
+      end
+    elsif !block_given? && val== nil
+      return self.size
     end
     count
   end
@@ -159,7 +168,15 @@ end
 
 
 # Testing my_count method
-# puts [1,2,3,4,5].my_count { |num| num > 0 }
+
+ary = [1, 2, 4, 2,3,4,5,2,3,4,1,2,2]
+# puts ary.my_count { |num| num > 0 }
+# puts ary.count { |num| num > 0 }
+# puts ary.count               #=> 4
+# puts ary.my_count               #=> 4
+# puts ary.count(2)            #=> 2
+# puts ary.my_count(2)            #=> 2
+# puts ary.count{ |x| x%2==0 } #=> 3
 
 # Testing my_map method
 # puts (1..4).my_map { |i| i*i }      #=> [1, 4, 9, 16]
