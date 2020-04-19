@@ -94,19 +94,28 @@ module Enumerable
 
   def my_none?(value = nil)
 
-    return true if value.is_a? Regexp
-    return false if value.is_a? Class
-    return true if value.is_a? Numeric
-    return true if value.is_a? String
-
     if block_given?
       values = true
       my_each { |val| values = false if yield(val) }
       values
-    elsif self[0].nil? && !include?(true)
+    elsif !block_given? && value.is_a?(Regexp)
       return true
-    else
-      return false
+    elsif !block_given? && value.is_a?(Numeric)
+      values = true
+      my_each { |val| values = false if val == value}
+      values 
+    elsif !block_given? && value.is_a?(String)
+      values = true
+      my_each { |val| values = false if val == value}
+      values 
+    elsif !block_given? && value.is_a?(Class)
+      values = true
+      my_each { |val| values = false if val.is_a?(value) }
+      values  
+    elsif !block_given? && value == nil
+      values = true
+      my_each { |val| values = false if val}
+      values 
     end
     values
   end
@@ -148,59 +157,6 @@ module Enumerable
   end
 end
 
-# Testing my_each method
-# puts (1..5).my_each  { |item| print item**2 }
-# puts (1..5).my_each  { |item| print item*2 }
-# puts (1..5).my_each  
-
-# Testing my_each_with_index
-# puts [1,2,3,4,5].my_each_with_index   { |val, index| print [val, index] }
-# puts [1,2,3,4,5].my_each_with_index
-
-# Testing my_select method
-# print [1,2,3,4,5].my_select { |num|  num.odd?  }
-# print [1,2,3,4,5].my_select { |num|  num.even?  }
-# print [1,2,3,4,5].my_select
-
-
-# puts %w[ant bear cat].my_any? { |word| word.length >= 3 } #=> true
-# puts %w[ant bear cat].my_any? { |word| word.length >= 4 } #=> true
-# puts %w[ant bear cat].my_any?(/d/)                        #=> false
-# puts [].my_any?(5)                        #=> false
-# puts [5].any?(5)                        #=> false
-# puts [5].my_any?(5)                        #=> false
-
-# puts ["walk","big",4].my_any?(4)                        #=> false
-# puts ["walk","big","small"].any?("small")                        #=> false
-
-# puts [nil, true, "small"].my_any?(Numeric)                     #=> true
-
-# puts [5].any?(5)                        #=> false
-# puts [5].my_any?(5)                        #=> false
-
-
-# puts [5].any?(5)                        #=> false
-# puts [5].my_any?(5)                        #=> false
-# puts %w[ant bear cat].any?(5)                        #=> false
-# puts [nil, true, 99].my_any?(Integer)                     #=> true
-puts [nil, false, "false"].my_any?                              #=> true
-puts [nil, "50", nil].any?                              #=> true
-# puts [].my_any?                                           #=> false
-# puts [4].my_any?
-# puts [4].my_any?("mike")
-
-# puts %w{ant bear cat}.my_none? { |word| word.length == 5 } #=> true
-# puts %w{ant bear cat}.my_none? { |word| word.length >= 4 } #=> false
-# puts %w[ant bear cat].my_none?(/d/)                        #=> true
-# puts [1, 3.14, 42].my_none?(Float)                         #=> false
-# puts %w[ant bear cat].none?(/d/)                        #=> true
-# puts [1, 3.14, 42].none?(Float)                         #=> false
-# puts [1, 3.14, 42].none?("3")                         #=> true
-# puts [1, 3.14, 42].my_none?("3")                         #=> true
-# puts [].my_none?                                           #=> true
-# puts [nil].my_none?                                        #=> true
-# puts [nil, false].my_none?                                 #=> true
-# puts [nil, false, true].my_none?                           #=> false
 
 # Testing my_count method
 # puts [1,2,3,4,5].my_count { |num| num > 0 }
