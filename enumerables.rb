@@ -64,20 +64,31 @@ module Enumerable
   end
 
   def my_any?(value = nil)
-    return false if value.is_a? Regexp
-    return false if value.is_a? String
-
-    return true if value.is_a? Numeric 
-    return true if value.is_a? Class 
 
     if block_given?
       values = false
       my_each { |val| values = true if yield(val) }
       values
-    elsif self.size < 1
+    elsif !block_given? && value.is_a?(Regexp)
       return false
+    elsif !block_given? && value.is_a?(Numeric)
+      values = false
+      my_each { |val| values = true if val == value }
+      values
+    elsif !block_given? && value.is_a?(String)
+      values = false
+      my_each { |val| values = true if val == value }
+      values
+    elsif !block_given? && value.is_a?(Class)
+      values = false
+      my_each { |val| values = true if val.is_a?(value) }
+      values  
+    elsif !block_given? && value == nil
+      values = false
+      my_each { |val| values = true if val}
+      values 
     else
-      true
+      return true
     end
   end
 
@@ -151,41 +162,29 @@ end
 # print [1,2,3,4,5].my_select { |num|  num.even?  }
 # print [1,2,3,4,5].my_select
 
-# Testing my_all? method
-# puts %w[ant bear cat].my_all? { |word| word.length >= 3 } #=> true
-# puts %w[ant bear cat].my_all? { |word| word.length >= 4 } #=> false
-# puts %w[ant bear cat].my_all?(/t/)                        #=> false
-# puts ["1", "3", "3.14"].my_all?(Numeric)                       #=> true
-# puts [2].my_all?                              #=> false
-# puts [].all?                              #=> false
-# puts [].my_all?                                           #=> true
-# puts [].my_all?(5)
-# puts ["1", "3", 3.14].all?(String)                       #=> true
-# puts ["21", "23", 12].my_all?(String)                       #=> true
-# puts ["21", "23", "12"].my_all?(String)                       #=> true
-# puts [/W/, /b/, 12].my_all?(Regexp)                       #=> true
-# puts [/W/, /b/, 12].all?(Regexp)                       #=> true
-# puts [].my_all?("sample")                       #=> true
-# puts [/t/].my_all?(/t/)                       #=> true
-puts ["one", true, 99].all?                              #=> false
-puts ["nil", true, 99].my_all?                              #=> false
-
-
-# puts %w[ant bear cat].my_all? { |word| word.length >= 3 } #=> true
-# puts %w[ant bear cat].my_all? { |word| word.length >= 4 } #=> false
-# puts %w[ant bear cat].my_all?(/t/)                        #=> false
-# puts [1, 2i, 3.14].my_all?(Numeric)                       #=> true
-# puts [1, 2i, 3.14].my_all?(Numeric)                       #=> true
-# puts [false, true, 99].my_all?                             #=> false
-# puts [nil, true, 99].all?                             #=> false
-# puts [].all?                                           #=> true
-# puts [].my_all?                                           #=> true
 
 # puts %w[ant bear cat].my_any? { |word| word.length >= 3 } #=> true
 # puts %w[ant bear cat].my_any? { |word| word.length >= 4 } #=> true
 # puts %w[ant bear cat].my_any?(/d/)                        #=> false
+# puts [].my_any?(5)                        #=> false
+# puts [5].any?(5)                        #=> false
+# puts [5].my_any?(5)                        #=> false
+
+# puts ["walk","big",4].my_any?(4)                        #=> false
+# puts ["walk","big","small"].any?("small")                        #=> false
+
+# puts [nil, true, "small"].my_any?(Numeric)                     #=> true
+
+# puts [5].any?(5)                        #=> false
+# puts [5].my_any?(5)                        #=> false
+
+
+# puts [5].any?(5)                        #=> false
+# puts [5].my_any?(5)                        #=> false
+# puts %w[ant bear cat].any?(5)                        #=> false
 # puts [nil, true, 99].my_any?(Integer)                     #=> true
-# puts [nil, true, 99].my_any?                              #=> true
+puts [nil, false, "false"].my_any?                              #=> true
+puts [nil, "50", nil].any?                              #=> true
 # puts [].my_any?                                           #=> false
 # puts [4].my_any?
 # puts [4].my_any?("mike")
