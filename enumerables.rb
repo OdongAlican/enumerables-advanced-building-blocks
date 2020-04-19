@@ -36,16 +36,30 @@ module Enumerable
 
   def my_all?(value = nil)
     
-    return false if value.is_a? Regexp
-
-    return true if value.is_a? Numeric || Class
-
     if block_given?
       values = true
       my_each { |val| values = false unless yield(val) }
       values
-    else
-      empty?
+    elsif !block_given? && value.is_a?(Numeric) && self.size < 1
+      return true
+    elsif !block_given? && value.is_a?(Numeric) && self.size > 0
+      return false
+    elsif !block_given? && value.is_a?(String) && self.size < 1
+      return true
+    elsif !block_given? && value.is_a?(String) && self.size > 0
+      return false
+    elsif !block_given? && value.is_a?(Regexp) && self.size < 1
+      return true
+    elsif !block_given? && value.is_a?(Regexp) && self.size > 0
+      return false
+    elsif !block_given? && value.is_a?(Class)
+      values = true
+      my_each { |val| values = false unless val.is_a?(value) }
+      values
+    elsif self.include?(nil) || self.include?(false)
+      return false
+    elsif !block_given? && value === nil
+      return true
     end
   end
 
@@ -68,10 +82,12 @@ module Enumerable
   end
 
   def my_none?(value = nil)
+
     return true if value.is_a? Regexp
     return false if value.is_a? Class
     return true if value.is_a? Numeric
     return true if value.is_a? String
+
     if block_given?
       values = true
       my_each { |val| values = false if yield(val) }
@@ -136,19 +152,33 @@ end
 # print [1,2,3,4,5].my_select
 
 # Testing my_all? method
-# puts [].my_all?  #=> true
-# puts [nil].my_all?  #=> true
-# puts [false].my_all?  #=> true
 # puts %w[ant bear cat].my_all? { |word| word.length >= 3 } #=> true
 # puts %w[ant bear cat].my_all? { |word| word.length >= 4 } #=> false
-# puts [nil, true, 99].my_all?                              #=> false
+# puts %w[ant bear cat].my_all?(/t/)                        #=> false
+# puts ["1", "3", "3.14"].my_all?(Numeric)                       #=> true
+# puts [2].my_all?                              #=> false
+# puts [].all?                              #=> false
+# puts [].my_all?                                           #=> true
+# puts [].my_all?(5)
+# puts ["1", "3", 3.14].all?(String)                       #=> true
+# puts ["21", "23", 12].my_all?(String)                       #=> true
+# puts ["21", "23", "12"].my_all?(String)                       #=> true
+# puts [/W/, /b/, 12].my_all?(Regexp)                       #=> true
+# puts [/W/, /b/, 12].all?(Regexp)                       #=> true
+# puts [].my_all?("sample")                       #=> true
+# puts [/t/].my_all?(/t/)                       #=> true
+puts ["one", true, 99].all?                              #=> false
+puts ["nil", true, 99].my_all?                              #=> false
 
 
 # puts %w[ant bear cat].my_all? { |word| word.length >= 3 } #=> true
 # puts %w[ant bear cat].my_all? { |word| word.length >= 4 } #=> false
 # puts %w[ant bear cat].my_all?(/t/)                        #=> false
 # puts [1, 2i, 3.14].my_all?(Numeric)                       #=> true
-# puts [nil, true, 99].my_all?                              #=> false
+# puts [1, 2i, 3.14].my_all?(Numeric)                       #=> true
+# puts [false, true, 99].my_all?                             #=> false
+# puts [nil, true, 99].all?                             #=> false
+# puts [].all?                                           #=> true
 # puts [].my_all?                                           #=> true
 
 # puts %w[ant bear cat].my_any? { |word| word.length >= 3 } #=> true
@@ -166,8 +196,8 @@ end
 # puts [1, 3.14, 42].my_none?(Float)                         #=> false
 # puts %w[ant bear cat].none?(/d/)                        #=> true
 # puts [1, 3.14, 42].none?(Float)                         #=> false
-puts [1, 3.14, 42].none?("3")                         #=> true
-puts [1, 3.14, 42].my_none?("3")                         #=> true
+# puts [1, 3.14, 42].none?("3")                         #=> true
+# puts [1, 3.14, 42].my_none?("3")                         #=> true
 # puts [].my_none?                                           #=> true
 # puts [nil].my_none?                                        #=> true
 # puts [nil, false].my_none?                                 #=> true
