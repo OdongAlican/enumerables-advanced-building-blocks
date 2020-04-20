@@ -147,7 +147,7 @@ module Enumerable
     mapped
   end
 
-  def my_inject(value=nil)
+  def my_inject(value=nil, value_two=nil)
     if block_given? && value == nil
     result = first
     updated_result = []
@@ -172,7 +172,7 @@ module Enumerable
         result = yield(result, val)
       end
       result = yield(result, value)
-    elsif !block_given? && value == :*
+    elsif !block_given? && value == :* 
       result = first
     updated_result = []
     each do |item|
@@ -184,6 +184,19 @@ module Enumerable
       result = (result * val)
     end
     result
+  elsif !block_given? && value != nil  && value_two == :*
+    result = first
+  updated_result = []
+  each do |item|
+    updated_result << item
+  end
+  updated_result.delete_at(0)
+
+  updated_result.each do |val|
+    result = (result * val)
+  end
+  result = result * value
+  result
   elsif !block_given? && value == :+
     result = first
   updated_result = []
@@ -196,6 +209,18 @@ module Enumerable
     result = (result + val)
   end
   result
+elsif !block_given? && value !=nil && value_two == :+ 
+  result = first
+updated_result = []
+each do |item|
+  updated_result << item
+end
+updated_result.delete_at(0)
+
+updated_result.each do |val|
+  result = (result + val)
+end
+result = result + value
   end
   end
 
@@ -204,14 +229,3 @@ module Enumerable
   end
 end
 
-# puts %w[ant bear cat].my_all? { |word| word.length >= 3 } #=> true
-# puts %w[ant bear cat].my_all? { |word| word.length >= 4 } #=> false
-puts ["ant", "bear", "cat"].all?("cat")                        #=> false
-puts ["ant", "bear", "cat"].my_all?("cat")                        #=> false
-# puts [].my_all?(/t/)                        #=> false
-
-# puts %w[ant bear cat].my_all?(/t/)                        #=> false
-# puts [].my_all?(/t/)                        #=> false
-# puts [1, 2i, 3.14].my_all?(Numeric)                       #=> true
-# puts [nil, true, 99].my_all?                              #=> false
-# puts [].my_all?                                           #=> true
