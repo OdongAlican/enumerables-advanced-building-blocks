@@ -1,6 +1,5 @@
 module Enumerable
   def my_each
-
     return to_enum(:my_each) unless block_given?
 
     index = 0
@@ -24,7 +23,6 @@ module Enumerable
   end
 
   def my_select
-
     return to_enum(:my_select) unless block_given?
 
     values = []
@@ -34,43 +32,41 @@ module Enumerable
     values
   end
 
-  def my_all?(value = nil)
-    
+  def my_all?(value = nil) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     if block_given?
       values = true
       my_each { |val| values = false unless yield(val) }
       values
     elsif !block_given? && value.is_a?(Numeric)
       values = true
-      my_each { |val| values = false if val != value}
-      values 
+      my_each { |val| values = false if val != value }
+      values
     elsif !block_given? && value.is_a?(String)
       values = true
-      my_each { |val| values = false if val != value}
-      values 
+      my_each { |val| values = false if val != value }
+      values
     elsif !block_given? && value.is_a?(Regexp)
       values = true
-      my_each { |val| values = false unless !val }
+      my_each { |val| values = false if val }
       values
     elsif !block_given? && value.is_a?(Class)
       values = true
       my_each { |val| values = false unless val.is_a?(value) }
       values
-    elsif self.include?(nil) || self.include?(false)
-      return false
-    elsif !block_given? && value === nil
-      return true
+    elsif include?(nil) || include?(false)
+      false
+    elsif !block_given? && value.nil?
+      true
     end
   end
 
-  def my_any?(value = nil)
-
+  def my_any?(value = nil) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     if block_given?
       values = false
       my_each { |val| values = true if yield(val) }
       values
     elsif !block_given? && value.is_a?(Regexp)
-      return false
+      false
     elsif !block_given? && value.is_a?(Numeric)
       values = false
       my_each { |val| values = true if val == value }
@@ -82,18 +78,17 @@ module Enumerable
     elsif !block_given? && value.is_a?(Class)
       values = false
       my_each { |val| values = true if val.is_a?(value) }
-      values  
-    elsif !block_given? && value == nil
+      values
+    elsif !block_given? && value.nil?
       values = false
-      my_each { |val| values = true if val}
-      values 
+      my_each { |val| values = true if val }
+      values
     else
-      return true
+      true
     end
   end
 
-  def my_none?(value = nil)
-
+  def my_none?(value = nil) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     if block_given?
       values = true
       my_each { |val| values = false if yield(val) }
@@ -102,37 +97,37 @@ module Enumerable
       return true
     elsif !block_given? && value.is_a?(Numeric)
       values = true
-      my_each { |val| values = false if val == value}
-      values 
+      my_each { |val| values = false if val == value }
+      values
     elsif !block_given? && value.is_a?(String)
       values = true
-      my_each { |val| values = false if val == value}
-      values 
+      my_each { |val| values = false if val == value }
+      values
     elsif !block_given? && value.is_a?(Class)
       values = true
       my_each { |val| values = false if val.is_a?(value) }
-      values  
-    elsif !block_given? && value == nil
+      values
+    elsif !block_given? && value.nil?
       values = true
-      my_each { |val| values = false if val}
-      values 
+      my_each { |val| values = false if val }
+      values
     end
     values
   end
 
-  def my_count(val = nil)
+  def my_count(val = nil) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     if block_given?
       count = 0
       my_each do |num|
         count += 1 if yield(num)
       end
-    elsif !block_given? && val != nil
+    elsif !block_given? && !val.nil?
       count = 0
       my_each do |num|
         count += 1 if num == val
       end
-    elsif !block_given? && val== nil
-      return self.size
+    elsif !block_given? && val.nil?
+      return size
     end
     count
   end
@@ -147,85 +142,84 @@ module Enumerable
     mapped
   end
 
-  def my_inject(value=nil, value_two=nil)
-    if block_given? && value == nil
-    result = first
-    updated_result = []
-    each do |item|
-      updated_result << item
-    end
-    updated_result.delete_at(0)
-
-    updated_result.each do |val|
-      result = yield(result, val)
-    end
-    result
-    elsif block_given? && value != nil
+  def my_inject(value = nil, value_two = nil) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    if block_given? && value.nil?
       result = first
       updated_result = []
       each do |item|
         updated_result << item
       end
       updated_result.delete_at(0)
-  
+
+      updated_result.each do |val|
+        result = yield(result, val)
+      end
+      result
+    elsif block_given? && !value.nil?
+      result = first
+      updated_result = []
+      each do |item|
+        updated_result << item
+      end
+      updated_result.delete_at(0)
+
       updated_result.each do |val|
         result = yield(result, val)
       end
       result = yield(result, value)
-    elsif !block_given? && value == :* 
+    elsif !block_given? && value == :*
       result = first
-    updated_result = []
-    each do |item|
-      updated_result << item
+      updated_result = []
+      each do |item|
+        updated_result << item
+      end
+      updated_result.delete_at(0)
+
+      updated_result.each do |val|
+        result = (result * val)
+      end
+      result
+    elsif !block_given? && !value.nil? && value_two == :*
+      result = first
+      updated_result = []
+      each do |item|
+        updated_result << item
+      end
+      updated_result.delete_at(0)
+
+      updated_result.each do |val|
+        result = (result * val)
+      end
+      result *= value
+      result
+    elsif !block_given? && value == :+
+      result = first
+      updated_result = []
+      each do |item|
+        updated_result << item
+      end
+      updated_result.delete_at(0)
+
+      updated_result.each do |val|
+        result = (result + val)
+      end
+      result
+    elsif !block_given? && !value.nil? && value_two == :+
+      result = first
+      updated_result = []
+      each do |item|
+        updated_result << item
+      end
+      updated_result.delete_at(0)
+
+      updated_result.each do |val|
+        result = (result + val)
+      end
+      result += value
     end
-    updated_result.delete_at(0)
-
-    updated_result.each do |val|
-      result = (result * val)
-    end
-    result
-  elsif !block_given? && value != nil  && value_two == :*
-    result = first
-  updated_result = []
-  each do |item|
-    updated_result << item
-  end
-  updated_result.delete_at(0)
-
-  updated_result.each do |val|
-    result = (result * val)
-  end
-  result = result * value
-  result
-  elsif !block_given? && value == :+
-    result = first
-  updated_result = []
-  each do |item|
-    updated_result << item
-  end
-  updated_result.delete_at(0)
-
-  updated_result.each do |val|
-    result = (result + val)
-  end
-  result
-elsif !block_given? && value !=nil && value_two == :+ 
-  result = first
-updated_result = []
-each do |item|
-  updated_result << item
-end
-updated_result.delete_at(0)
-
-updated_result.each do |val|
-  result = (result + val)
-end
-result = result + value
-  end
   end
 
   def multiply_els
     my_inject { |result, num| result * num }
   end
 end
-
