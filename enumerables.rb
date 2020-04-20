@@ -40,18 +40,18 @@ module Enumerable
       values = true
       my_each { |val| values = false unless yield(val) }
       values
-    elsif !block_given? && value.is_a?(Numeric) && self.size < 1
-      return true
-    elsif !block_given? && value.is_a?(Numeric) && self.size > 0
-      return false
-    elsif !block_given? && value.is_a?(String) && self.size < 1
-      return true
-    elsif !block_given? && value.is_a?(String) && self.size > 0
-      return false
-    elsif !block_given? && value.is_a?(Regexp) && self.size < 1
-      return true
-    elsif !block_given? && value.is_a?(Regexp) && self.size > 0
-      return false
+    elsif !block_given? && value.is_a?(Numeric)
+      values = true
+      my_each { |val| values = false if val != value}
+      values 
+    elsif !block_given? && value.is_a?(String)
+      values = true
+      my_each { |val| values = false if val != value}
+      values 
+    elsif !block_given? && value.is_a?(Regexp)
+      values = true
+      my_each { |val| values = false unless !val }
+      values
     elsif !block_given? && value.is_a?(Class)
       values = true
       my_each { |val| values = false unless val.is_a?(value) }
@@ -204,29 +204,14 @@ module Enumerable
   end
 end
 
-
-# Testing my_inject method
-# puts (4..10).my_inject { |sum, n| sum * n } #=> 45
-# puts (4..10).my_inject { |sum, n| sum + n } #=> 45
-# puts (4..10).inject { |sum, n| sum * n } #=> 45
-# puts (4..10).inject { |sum, n| sum + n } #=> 45
-
-# puts (5..10).inject(:+)                       #=> 45
-# puts (5..10).my_inject(:+)                       #=> 45
-# puts (5..10).my_inject(:*)                       #=> 45
-# puts (5..10).inject(:*)                       #=> 45
-
-puts (4..10).my_inject(7) { |sum, n| sum + n } #=> 45
-puts (4..10).inject(7) { |sum, n| sum + n } #=> 45
-# longest = %w{ cat sheep bear }.my_inject do |memo, word|
-#   memo.length > word.length ? memo : word
-# end
-# puts longest
-
 # puts %w[ant bear cat].my_all? { |word| word.length >= 3 } #=> true
 # puts %w[ant bear cat].my_all? { |word| word.length >= 4 } #=> false
-# # %w[ant bear cat].my_all?(/t/)                        #=> false
-# # [1, 2i, 3.14].my_all?(Numeric)                       #=> true
+puts ["ant", "bear", "cat"].all?("cat")                        #=> false
+puts ["ant", "bear", "cat"].my_all?("cat")                        #=> false
+# puts [].my_all?(/t/)                        #=> false
+
+# puts %w[ant bear cat].my_all?(/t/)                        #=> false
+# puts [].my_all?(/t/)                        #=> false
+# puts [1, 2i, 3.14].my_all?(Numeric)                       #=> true
 # puts [nil, true, 99].my_all?                              #=> false
 # puts [].my_all?                                           #=> true
-# puts [1].my_all?                                           #=> true
