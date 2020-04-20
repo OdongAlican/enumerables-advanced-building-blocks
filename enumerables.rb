@@ -47,7 +47,7 @@ module Enumerable
       values
     elsif !block_given? && value.is_a?(Regexp)
       values = true
-      my_each { |val| values = false if val }
+      my_each { |val| values = false if value !~ val.to_s }
       values
     elsif !block_given? && value.is_a?(Class)
       values = true
@@ -66,7 +66,9 @@ module Enumerable
       my_each { |val| values = true if yield(val) }
       values
     elsif !block_given? && value.is_a?(Regexp)
-      false
+      values = false
+      my_each { |val| values = true if value =~ val.to_s }
+      values
     elsif !block_given? && value.is_a?(Numeric)
       values = false
       my_each { |val| values = true if val == value }
@@ -94,7 +96,9 @@ module Enumerable
       my_each { |val| values = false if yield(val) }
       values
     elsif !block_given? && value.is_a?(Regexp)
-      return true
+      values = true
+      my_each { |val| values = false if value =~ val.to_s }
+      values
     elsif !block_given? && value.is_a?(Numeric)
       values = true
       my_each { |val| values = false if val == value }
