@@ -147,7 +147,8 @@ module Enumerable
     mapped
   end
 
-  def my_inject
+  def my_inject(value=nil)
+    if block_given? && value == nil
     result = first
     updated_result = []
     each do |item|
@@ -159,6 +160,43 @@ module Enumerable
       result = yield(result, val)
     end
     result
+    elsif block_given? && value != nil
+      result = first
+      updated_result = []
+      each do |item|
+        updated_result << item
+      end
+      updated_result.delete_at(0)
+  
+      updated_result.each do |val|
+        result = yield(result, val)
+      end
+      result = result * value
+    elsif !block_given? && value == :*
+      result = first
+    updated_result = []
+    each do |item|
+      updated_result << item
+    end
+    updated_result.delete_at(0)
+
+    updated_result.each do |val|
+      result = (result * val)
+    end
+    result
+  elsif !block_given? && value == :+
+    result = first
+  updated_result = []
+  each do |item|
+    updated_result << item
+  end
+  updated_result.delete_at(0)
+
+  updated_result.each do |val|
+    result = (result + val)
+  end
+  result
+  end
   end
 
   def multiply_els
@@ -167,29 +205,23 @@ module Enumerable
 end
 
 
-# Testing my_count method
-
-ary = [1, 2, 4, 2,3,4,5,2,3,4,1,2,2]
-# puts ary.my_count { |num| num > 0 }
-# puts ary.count { |num| num > 0 }
-# puts ary.count               #=> 4
-# puts ary.my_count               #=> 4
-# puts ary.count(2)            #=> 2
-# puts ary.my_count(2)            #=> 2
-# puts ary.count{ |x| x%2==0 } #=> 3
-
-# Testing my_map method
-# puts (1..4).my_map { |i| i*i }      #=> [1, 4, 9, 16]
-# puts (1..4).my_map 
-
 # Testing my_inject method
 # puts (4..10).my_inject { |sum, n| sum * n } #=> 45
-# puts (4..10).inject(1) { |sum, n| sum * n } #=> 45
-# puts [2,4,5].multiply_els                   #=> 40
-# longest = %w{ cat sheep bear }.my_inject do |memo, word|
-#   memo.length > word.length ? memo : word
-# end
-# puts longest
+# puts (4..10).my_inject { |sum, n| sum + n } #=> 45
+# puts (4..10).inject { |sum, n| sum * n } #=> 45
+# puts (4..10).inject { |sum, n| sum + n } #=> 45
+
+puts (5..10).inject(:+)                       #=> 45
+puts (5..10).my_inject(:+)                       #=> 45
+puts (5..10).my_inject(:*)                       #=> 45
+puts (5..10).inject(:*)                       #=> 45
+
+puts (4..10).my_inject(3) { |sum, n| sum * n } #=> 45
+puts (4..10).inject(3) { |sum, n| sum * n } #=> 45
+longest = %w{ cat sheep bear }.my_inject do |memo, word|
+  memo.length > word.length ? memo : word
+end
+puts longest
 
 # puts %w[ant bear cat].my_all? { |word| word.length >= 3 } #=> true
 # puts %w[ant bear cat].my_all? { |word| word.length >= 4 } #=> false
