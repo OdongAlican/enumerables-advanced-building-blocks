@@ -171,7 +171,7 @@ module Enumerable
       updated_result.each do |val|
         result = yield(result, val)
       end
-      result = result * value
+      result = yield(result, value)
     elsif !block_given? && value == :*
       result = first
     updated_result = []
@@ -211,17 +211,17 @@ end
 # puts (4..10).inject { |sum, n| sum * n } #=> 45
 # puts (4..10).inject { |sum, n| sum + n } #=> 45
 
-puts (5..10).inject(:+)                       #=> 45
-puts (5..10).my_inject(:+)                       #=> 45
-puts (5..10).my_inject(:*)                       #=> 45
-puts (5..10).inject(:*)                       #=> 45
+# puts (5..10).inject(:+)                       #=> 45
+# puts (5..10).my_inject(:+)                       #=> 45
+# puts (5..10).my_inject(:*)                       #=> 45
+# puts (5..10).inject(:*)                       #=> 45
 
-puts (4..10).my_inject(3) { |sum, n| sum * n } #=> 45
-puts (4..10).inject(3) { |sum, n| sum * n } #=> 45
-longest = %w{ cat sheep bear }.my_inject do |memo, word|
-  memo.length > word.length ? memo : word
-end
-puts longest
+puts (4..10).my_inject(7) { |sum, n| sum + n } #=> 45
+puts (4..10).inject(7) { |sum, n| sum + n } #=> 45
+# longest = %w{ cat sheep bear }.my_inject do |memo, word|
+#   memo.length > word.length ? memo : word
+# end
+# puts longest
 
 # puts %w[ant bear cat].my_all? { |word| word.length >= 3 } #=> true
 # puts %w[ant bear cat].my_all? { |word| word.length >= 4 } #=> false
