@@ -140,7 +140,7 @@ module Enumerable
     count
   end
 
-  def my_map(prc = nil)
+  def my_map(prc = nil) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     return to_enum(:my_select) unless block_given? || prc
 
     mapped = []
@@ -239,4 +239,3 @@ module Enumerable
     my_inject { |result, num| result * num }
   end
 end
-

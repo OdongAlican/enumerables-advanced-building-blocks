@@ -1,8 +1,8 @@
 require_relative '../enumerables.rb'
 
 describe Enumerable do
-  let (:arr) { (1..3).to_a }
-  let (:word) {%w[dog door rod blade]}
+  let(:arr) { (1..3).to_a }
+  let(:word) { %w[dog door rod blade] }
   describe '#my_each' do
     it 'return each element in the array' do
       expect { |b| arr.my_each(&b) }.to yield_successive_args(1, 2, 3)
@@ -40,7 +40,7 @@ describe Enumerable do
     it 'returns true if all values match as Integers' do
       expect(arr.my_all?(Integer)).to be true
     end
-    
+
     it 'returns true if all values match the regexp' do
       expect(word.my_all?(/d/)).to be true
     end
@@ -49,8 +49,8 @@ describe Enumerable do
       expect(arr.my_all?).to be true
     end
   end
-  
-    describe '#my_any?' do
+
+  describe '#my_any?' do
     it 'returns true if the block ever returns true ' do
       expect { |b| arr.my_any?(&b) }.to yield_control
     end
@@ -58,7 +58,7 @@ describe Enumerable do
     it 'returns true if atleast one value match the arg' do
       expect(arr.my_any?(Integer)).to be true
     end
-    
+
     it 'returns true if any values match the regexp' do
       expect(word.my_any?(/b/)).to be true
     end
@@ -67,8 +67,8 @@ describe Enumerable do
       expect(arr.my_any?).to be true
     end
   end
-  
-    describe '#my_none?' do
+
+  describe '#my_none?' do
     it 'returns true if the block never returns true' do
       expect { |b| arr.my_none?(&b) }.to yield_control
     end
@@ -76,7 +76,7 @@ describe Enumerable do
     it 'returns true if all values do not match the arg' do
       expect(arr.my_none?(Integer)).to be false
     end
-    
+
     it 'returns false if all values match the regexp' do
       expect(word.my_none?(/d/)).to be false
     end
@@ -84,8 +84,8 @@ describe Enumerable do
     it 'returns true when none of the collection members is true' do
       expect(arr.my_none?).to be false
     end
-    end
-    describe '#my_count' do
+  end
+  describe '#my_count' do
     it 'returns the number of items yielding a true value' do
       expect { |b| arr.my_count(&b) }.to yield_control
     end
