@@ -1,6 +1,10 @@
 module Enumerable
+  def message
+    'Welcome to the array world'
+  end
+
   def my_each
-    return to_enum(:my_each) unless block_given?
+    return to_enum(:each) unless block_given?
 
     index = 0
     while index < size
@@ -136,12 +140,20 @@ module Enumerable
     count
   end
 
-  def my_map
-    return to_enum(:my_map) unless block_given?
+  def my_map(prc = nil)
+    return to_enum(:my_select) unless block_given? || prc
 
     mapped = []
-    my_each do |i|
-      mapped << (proc.nil? ? proc.call(i) : yield(i))
+    if (prc && block_given?) || prc
+      my_each do |i|
+        prc.call(i)
+        mapped.push(prc.call(i))
+      end
+    elsif block_given?
+      my_each do |i|
+        yield(i)
+        mapped.push(yield(i))
+      end
     end
     mapped
   end
@@ -227,3 +239,4 @@ module Enumerable
     my_inject { |result, num| result * num }
   end
 end
+
