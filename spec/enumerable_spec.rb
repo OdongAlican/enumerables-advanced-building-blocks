@@ -49,4 +49,40 @@ describe Enumerable do
       expect(arr.my_all?).to be true
     end
   end
+  
+    describe '#my_any?' do
+    it 'returns true if the block ever returns true ' do
+      expect { |b| arr.my_any?(&b) }.to yield_control
+    end
+
+    it 'returns true if atleast one value match the arg' do
+      expect(arr.my_any?(Integer)).to be true
+    end
+    
+    it 'returns true if any values match the regexp' do
+      expect(word.my_any?(/b/)).to be true
+    end
+
+    it 'returns true when atleast one of the collection members is true' do
+      expect(arr.my_any?).to be true
+    end
+  end
+  
+    describe '#my_none?' do
+    it 'returns true if the block never returns true' do
+      expect { |b| arr.my_none?(&b) }.to yield_control
+    end
+
+    it 'returns true if all values do not match the arg' do
+      expect(arr.my_none?(Integer)).to be false
+    end
+    
+    it 'returns false if all values match the regexp' do
+      expect(word.my_none?(/d/)).to be false
+    end
+
+    it 'returns true when none of the collection members is true' do
+      expect(arr.my_none?).to be false
+    end
+    end
 end
