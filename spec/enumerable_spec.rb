@@ -85,4 +85,50 @@ describe Enumerable do
       expect(arr.my_none?).to be false
     end
     end
+    describe '#my_count' do
+    it 'returns the number of items yielding a true value' do
+      expect { |b| arr.my_count(&b) }.to yield_control
+    end
+
+    it 'returns returns the number of items that are equal to the arg given' do
+      expect(arr.my_count(2)).to eql(1)
+    end
+
+    it 'returns the length of the array if no args and block is given' do
+      expect(arr.my_count).to eql(3)
+    end
+  end
+
+  describe '#my_map' do
+    it 'returns an array with the results of the block given' do
+      expect { |b| arr.my_map(&b) }.to yield_control
+    end
+
+    it 'returns an arr with the results of the proc called' do
+      proc = proc { |num| num > 10 }
+      expect(arr.my_map(proc)).to eql([false, false, false])
+    end
+
+    it 'returns an enumerator if no block is given' do
+      expect(arr.my_map).to be_an Enumerator
+    end
+  end
+
+  describe '#my_inject' do
+    it 'returns an accumulated value when yielded and with arg' do
+      expect { |b| arr.my_inject(5, &b) }.to yield_control
+    end
+
+    it 'returns an accumulated value with no args' do
+      expect { |b| arr.my_inject(&b) }.to yield_control
+    end
+
+    it 'uses the operator symbol as an accumulator' do
+      expect(arr.my_inject(:+)).to eql(6)
+    end
+
+    it 'uses the operator symbol as an accumulator and starts uses the number arg as initial value' do
+      expect(arr.my_inject(3, :+)).to eql(9)
+    end
+  end
 end
